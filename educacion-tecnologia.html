@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Educación & Tecnología — El Futuro del Aprendizaje</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0e1a;
+    --paper: #f5f0e8;
+    --electric: #00e5ff;
+    --amber: #ffb300;
+    --coral: #ff4d6d;
+    --mint: #00c896;
+    --grid: rgba(0,229,255,0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--electric);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s, opacity 0.3s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--electric);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+    opacity: 0.5;
+  }
+
+  /* Grid background */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Floating particles */
+  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--electric);
+    border-radius: 50%;
+    animation: float linear infinite;
+    opacity: 0;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 80px 8vw;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--electric);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--electric);
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3.5rem, 9vw, 9rem);
+    line-height: 0.92;
+    font-weight: 400;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.4s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--electric);
+    display: block;
+  }
+  .hero-title span {
+    -webkit-text-stroke: 1px var(--paper);
+    color: transparent;
+    display: block;
+  }
+
+  .hero-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(0.75rem, 1.4vw, 1rem);
+    color: rgba(245,240,232,0.5);
+    max-width: 420px;
+    line-height: 1.8;
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.6s forwards;
+  }
+
+  .hero-scroll {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.8s forwards;
+  }
+  .scroll-line {
+    width: 60px; height: 1px;
+    background: rgba(245,240,232,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--electric);
+    animation: scanLine 2s ease-in-out infinite;
+    transform: translateX(-100%);
+  }
+  @keyframes scanLine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Big circuit decoration */
+  .circuit-art {
+    position: absolute;
+    right: -5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(300px, 45vw, 700px);
+    opacity: 0.12;
+    animation: fadeIn 2s ease 1s forwards;
+    opacity: 0;
+  }
+  @keyframes fadeIn {
+    to { opacity: 0.12; }
+  }
+
+  /* Sections */
+  section {
+    position: relative;
+    z-index: 2;
+    padding: 120px 8vw;
+  }
+
+  /* Section tag */
+  .s-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--electric);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 50px;
+  }
+  .s-tag::after {
+    content: '';
+    display: block;
+    flex: 1;
+    max-width: 80px;
+    height: 1px;
+    background: var(--electric);
+    opacity: 0.4;
+  }
+
+  /* Card grid */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 2px;
+    margin-bottom: 4px;
+  }
+
+  .card {
+    background: rgba(245,240,232,0.03);
+    border: 1px solid rgba(245,240,232,0.06);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s, border-color 0.4s, transform 0.4s;
+    cursor: none;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent, var(--electric)) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .card:hover {
+    background: rgba(245,240,232,0.06);
+    border-color: rgba(245,240,232,0.15);
+    transform: translateY(-4px);
+  }
+  .card:hover::before { opacity: 0.05; }
+
+  .card-num {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--accent, var(--electric));
+    margin-bottom: 28px;
+    display: block;
+  }
+  .card-icon {
+    font-size: 2.4rem;
+    margin-bottom: 20px;
+    display: block;
+    filter: drop-shadow(0 0 12px var(--accent, var(--electric)));
+    transition: filter 0.3s;
+  }
+  .card:hover .card-icon {
+    filter: drop-shadow(0 0 24px var(--accent, var(--electric)));
+  }
+  .card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .card p {
+    font-size: 0.82rem;
+    line-height: 1.9;
+    color: rgba(245,240,232,0.55);
+  }
+
+  /* Big text block */
+  .big-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+  @media (max-width: 768px) {
+    .big-block { grid-template-columns: 1fr; gap: 60px; }
+    .circuit-art { display: none; }
+  }
+
+  .big-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(6rem, 15vw, 16rem);
+    line-height: 1;
+    -webkit-text-stroke: 1px rgba(245,240,232,0.1);
+    color: transparent;
+    user-select: none;
+    position: relative;
+    left: -4px;
+  }
+
+  .body-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.3rem, 2.5vw, 2rem);
+    line-height: 1.55;
+    color: rgba(245,240,232,0.9);
+  }
+  .body-text .highlight {
+    color: var(--electric);
+    font-style: italic;
+  }
+  .body-text .amber { color: var(--amber); font-style: italic; }
+  .body-text .coral { color: var(--coral); font-style: italic; }
+  .body-text .mint { color: var(--mint); font-style: italic; }
+
+  /* Challenges */
+  .challenges-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  @media (max-width: 900px) {
+    .challenges-list { grid-template-columns: 1fr; }
+  }
+
+  .challenge-item {
+    padding: 40px;
+    border: 1px solid rgba(245,240,232,0.07);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+  .challenge-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--c, var(--coral));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .challenge-item:hover::after { transform: scaleX(1); }
+  .challenge-item:hover { background: rgba(245,240,232,0.03); }
+  .challenge-item .ci-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--c, var(--coral));
+    margin-bottom: 16px;
+  }
+  .challenge-item h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .challenge-item p {
+    font-size: 0.8rem;
+    line-height: 1.85;
+    color: rgba(245,240,232,0.45);
+  }
+
+  /* Quote */
+  .quote-section {
+    background: rgba(0,229,255,0.04);
+    border-top: 1px solid rgba(0,229,255,0.12);
+    border-bottom: 1px solid rgba(0,229,255,0.12);
+  }
+  .big-quote {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 4.5vw, 4rem);
+    line-height: 1.25;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .big-quote::before {
+    content: '"';
+    font-size: 12rem;
+    line-height: 0.7;
+    color: var(--electric);
+    opacity: 0.1;
+    position: absolute;
+    top: 0; left: -20px;
+    font-family: 'DM Serif Display', serif;
+  }
+
+  /* Footer */
+  footer {
+    z-index: 2;
+    position: relative;
+    padding: 60px 8vw 40px;
+    border-top: 1px solid rgba(245,240,232,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+  }
+  .footer-note {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: rgba(245,240,232,0.3);
+    text-transform: uppercase;
+  }
+  .footer-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--electric);
+    display: inline-block;
+    margin: 0 8px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.6); }
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Horizontal rule */
+  .hr-fancy {
+    border: none;
+    border-top: 1px solid rgba(245,240,232,0.07);
+    margin: 0 8vw;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Noise overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.028;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Scanline */
+  .scanline {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--electric), transparent);
+    animation: scan 8s linear infinite;
+    pointer-events: none;
+    z-index: 998;
+    opacity: 0.25;
+  }
+  @keyframes scan {
+    0% { top: -3px; }
+    100% { top: 100vh; }
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    border: 1px solid rgba(245,240,232,0.07);
+    overflow: hidden;
+    margin-top: 80px;
+  }
+  .stat {
+    flex: 1;
+    padding: 40px 32px;
+    border-right: 1px solid rgba(245,240,232,0.07);
+    transition: background 0.4s;
+  }
+  .stat:last-child { border-right: none; }
+  .stat:hover { background: rgba(245,240,232,0.04); }
+  .stat-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    color: var(--sv-c, var(--electric));
+    display: block;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .stat-lbl {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.35);
+  }
+  @media (max-width: 600px) {
+    .stats-bar { flex-direction: column; }
+    .stat { border-right: none; border-bottom: 1px solid rgba(245,240,232,0.07); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- Scanline -->
+<div class="scanline"></div>
+
+<!-- Grid Background -->
+<div class="grid-bg"></div>
+
+<!-- Particles -->
+<div class="particles" id="particles"></div>
+
+<!-- HERO -->
+<section class="hero">
+
+  <!-- Circuit SVG decoration -->
+  <svg class="circuit-art" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="250" cy="250" r="200" stroke="currentColor" stroke-width="0.5"/>
+    <circle cx="250" cy="250" r="150" stroke="currentColor" stroke-width="0.5" stroke-dasharray="8 4"/>
+    <circle cx="250" cy="250" r="90" stroke="currentColor" stroke-width="0.5"/>
+    <circle cx="250" cy="250" r="30" stroke="currentColor" stroke-width="1"/>
+    <circle cx="250" cy="250" r="8" fill="currentColor"/>
+    <!-- Radial lines -->
+    <line x1="250" y1="50" x2="250" y2="100" stroke="currentColor" stroke-width="1"/>
+    <line x1="250" y1="400" x2="250" y2="450" stroke="currentColor" stroke-width="1"/>
+    <line x1="50" y1="250" x2="100" y2="250" stroke="currentColor" stroke-width="1"/>
+    <line x1="400" y1="250" x2="450" y2="250" stroke="currentColor" stroke-width="1"/>
+    <!-- Diagonal lines -->
+    <line x1="109" y1="109" x2="144" y2="144" stroke="currentColor" stroke-width="0.8"/>
+    <line x1="391" y1="109" x2="356" y2="144" stroke="currentColor" stroke-width="0.8"/>
+    <line x1="109" y1="391" x2="144" y2="356" stroke="currentColor" stroke-width="0.8"/>
+    <line x1="391" y1="391" x2="356" y2="356" stroke="currentColor" stroke-width="0.8"/>
+    <!-- Nodes -->
+    <circle cx="250" cy="60" r="5" fill="currentColor"/>
+    <circle cx="250" cy="440" r="5" fill="currentColor"/>
+    <circle cx="60" cy="250" r="5" fill="currentColor"/>
+    <circle cx="440" cy="250" r="5" fill="currentColor"/>
+    <circle cx="116" cy="116" r="4" fill="currentColor"/>
+    <circle cx="384" cy="116" r="4" fill="currentColor"/>
+    <circle cx="116" cy="384" r="4" fill="currentColor"/>
+    <circle cx="384" cy="384" r="4" fill="currentColor"/>
+    <!-- Inner cross -->
+    <line x1="250" y1="160" x2="250" y2="220" stroke="currentColor" stroke-width="0.5"/>
+    <line x1="160" y1="250" x2="220" y2="250" stroke="currentColor" stroke-width="0.5"/>
+    <line x1="280" y1="250" x2="340" y2="250" stroke="currentColor" stroke-width="0.5"/>
+    <line x1="250" y1="280" x2="250" y2="340" stroke="currentColor" stroke-width="0.5"/>
+  </svg>
+
+  <div class="hero-label">Reflexión educativa — 2024</div>
+
+  <h1 class="hero-title">
+    <span>Educación</span>
+    <em>&amp; Tecnología</em>
+  </h1>
+
+  <p class="hero-sub">El impacto de las herramientas digitales en el proceso de enseñanza y aprendizaje del siglo XXI.</p>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Desplaza para explorar
+  </div>
+
+</section>
+
+<hr class="hr-fancy">
+
+<!-- BLOCK 1: Transformación -->
+<section>
+  <div class="s-tag">01 — Transformación</div>
+
+  <div class="big-block">
+    <div class="big-num">01</div>
+    <div class="body-text reveal">
+      En las últimas décadas, la tecnología ha <span class="highlight">transformado profundamente</span> la manera en que se desarrolla el proceso educativo. El acceso a internet, las <span class="amber">plataformas virtuales</span> y las herramientas digitales han permitido nuevas formas de enseñanza y aprendizaje, facilitando el acceso a la información y promoviendo entornos educativos <span class="mint">más interactivos</span>.
+    </div>
+  </div>
+
+  <div class="stats-bar reveal" style="transition-delay:0.2s">
+    <div class="stat">
+      <span class="stat-val" style="--sv-c: var(--electric)">∞</span>
+      <span class="stat-lbl">Información disponible</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val" style="--sv-c: var(--amber)">24/7</span>
+      <span class="stat-lbl">Acceso al aprendizaje</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val" style="--sv-c: var(--mint)">+</span>
+      <span class="stat-lbl">Entornos interactivos</span>
+    </div>
+  </div>
+
+</section>
+
+<hr class="hr-fancy">
+
+<!-- BLOCK 2: Desafíos -->
+<section>
+  <div class="s-tag">02 — Desafíos</div>
+
+  <div class="body-text reveal" style="max-width: 700px; margin-bottom: 60px; font-size: clamp(1rem, 2vw, 1.5rem);">
+    Sin embargo, el uso de la tecnología también presenta <span class="coral">desafíos importantes</span> que no pueden ignorarse.
+  </div>
+
+  <div class="challenges-list">
+    <div class="challenge-item reveal" style="--c: var(--coral)">
+      <div class="ci-label">Desafío 01</div>
+      <h4>Sobreinformación</h4>
+      <p>La abundancia de contenido digital puede abrumar a los estudiantes, dificultando la selección de fuentes confiables y relevantes para el aprendizaje.</p>
+    </div>
+    <div class="challenge-item reveal" style="--c: var(--amber); transition-delay: 0.15s">
+      <div class="ci-label">Desafío 02</div>
+      <h4>Distracciones digitales</h4>
+      <p>Las redes sociales, notificaciones y entretenimiento compiten directamente con el tiempo y la atención dedicados al proceso educativo.</p>
+    </div>
+    <div class="challenge-item reveal" style="--c: var(--mint); transition-delay: 0.3s">
+      <div class="ci-label">Desafío 03</div>
+      <h4>Calidad de la información</h4>
+      <p>La falta de habilidades para evaluar críticamente la veracidad y calidad de la información disponible en línea puede afectar gravemente el aprendizaje.</p>
+    </div>
+  </div>
+
+</section>
+
+<hr class="hr-fancy">
+
+<!-- BLOCK 3: El Docente -->
+<section>
+  <div class="s-tag">03 — El rol docente</div>
+
+  <div class="cards">
+    <div class="card reveal" style="--accent: var(--electric)">
+      <span class="card-num">// FUNCIÓN CENTRAL</span>
+      <span class="card-icon">🎓</span>
+      <h3>Guía fundamental</h3>
+      <p>El papel del docente sigue siendo fundamental: no solo enseña contenidos, sino que orienta a los estudiantes en el uso responsable y crítico de las herramientas tecnológicas.</p>
+    </div>
+    <div class="card reveal" style="--accent: var(--amber); transition-delay: 0.15s">
+      <span class="card-num">// PENSAMIENTO CRÍTICO</span>
+      <span class="card-icon">🔍</span>
+      <h3>Evaluación crítica</h3>
+      <p>Formar estudiantes capaces de analizar, cuestionar y validar la información que encuentran en entornos digitales, más allá de la mera recepción pasiva de datos.</p>
+    </div>
+    <div class="card reveal" style="--accent: var(--mint); transition-delay: 0.3s">
+      <span class="card-num">// USO RESPONSABLE</span>
+      <span class="card-icon">⚡</span>
+      <h3>Uso ético y consciente</h3>
+      <p>Orientar hacia un uso reflexivo de la tecnología, reconociendo tanto sus potencialidades como sus riesgos en el contexto educativo contemporáneo.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <p class="big-quote reveal">
+    El docente del futuro no es quien más sabe de tecnología, sino quien mejor sabe <em style="color: var(--electric)">integrarla al aprendizaje.</em>
+  </p>
+</section>
+
+<hr class="hr-fancy">
+
+<!-- BLOCK 4: Futuro -->
+<section>
+  <div class="s-tag">04 — Educación del futuro</div>
+
+  <div class="big-block">
+    <div class="body-text reveal" style="font-size: clamp(1rem, 2.2vw, 1.7rem);">
+      Pensar en la educación del futuro implica reconocer que la tecnología continuará <span class="highlight">evolucionando</span>. Por ello, los docentes deben prepararse para integrar estos recursos de manera <span class="amber">pedagógica</span>, promoviendo el pensamiento crítico, la <span class="coral">creatividad</span> y el aprendizaje <span class="mint">significativo</span>.
+    </div>
+    <div class="big-num" style="text-align: right;">04</div>
+  </div>
+
+  <div class="cards" style="margin-top: 80px;">
+    <div class="card reveal" style="--accent: var(--coral)">
+      <span class="card-num">// HABILIDAD 01</span>
+      <span class="card-icon">💡</span>
+      <h3>Pensamiento crítico</h3>
+      <p>Desarrollar en los estudiantes la capacidad de analizar información, identificar sesgos y construir argumentos fundamentados.</p>
+    </div>
+    <div class="card reveal" style="--accent: var(--electric); transition-delay: 0.15s">
+      <span class="card-num">// HABILIDAD 02</span>
+      <span class="card-icon">🎨</span>
+      <h3>Creatividad</h3>
+      <p>Utilizar la tecnología como herramienta de creación, no solo de consumo, fomentando la expresión y la innovación en el aula.</p>
+    </div>
+    <div class="card reveal" style="--accent: var(--amber); transition-delay: 0.3s">
+      <span class="card-num">// HABILIDAD 03</span>
+      <span class="card-icon">🌱</span>
+      <h3>Aprendizaje significativo</h3>
+      <p>Conectar los contenidos con experiencias reales y contextos cercanos al estudiante, logrando que el conocimiento perdure y trascienda.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">EDU<span style="color:var(--electric)">.</span>TECH</div>
+  <div class="footer-note">
+    <span class="footer-dot"></span>
+    Tecnología · Educación · Futuro
+  </div>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 80);
+  });
+  document.addEventListener('mousedown', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(2)';
+    ring.style.transform = 'translate(-50%,-50%) scale(0.6)';
+  });
+  document.addEventListener('mouseup', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+    ring.style.transform = 'translate(-50%,-50%) scale(1)';
+  });
+
+  // Particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 35; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (8 + Math.random() * 18) + 's';
+    p.style.animationDelay = (Math.random() * 20) + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 3) + 'px';
+    const hue = Math.random() > 0.5 ? '185' : '45';
+    p.style.background = `hsl(${hue}, 100%, 70%)`;
+    container.appendChild(p);
+  }
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+
+</body>
+</html>
